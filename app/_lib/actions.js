@@ -28,6 +28,35 @@ export async function  updateGuestAction(formData) {
     revalidatePath("/account/profile");
 }
 
+export async function createBookingAction(bookingData, formData) {
+    const session = await auth();
+    if (!session) throw new Error("You must be authenticated");
+
+    const newBooking = {
+        ...bookingData,
+        guestId: session.user.guestId,
+        guests: Number(formData.get('guests')),
+        observations: formData.get('observations').slice(0, 1000),
+        extra: 0,
+        price: bookingData.price,
+        total: bookingData.total,
+        isPaid: false,
+        isBreakfast: false,
+        status: "unconfirmed",
+    };
+
+    const { error } = await supabase
+        .from('bookings')
+        .insert([newBooking])
+
+    if (error) {
+        console.error(error);
+        throw new Error('Booking could not be created');
+    }
+
+    revalidatePath(`/cabins/${bookingData.cabinId}`);
+}
+
 export async function updateBookingAction(formData) {
     const bookingId = Number(formData.get("bookingId"));
 
