@@ -83,12 +83,13 @@ function ReservationForm({ cabin, user }) {
                 </div>
 
                 <div className="flex justify-end items-center gap-6">
-                    <p className="text-primary-300 text-base">Start by selecting dates</p>
-
-
-                    <SubmitFormButton pendingLabel={"Processing...."}>
-                        Reserve now
-                    </SubmitFormButton>
+                    {!(startDate && endDate) ? (
+                        <p className="text-primary-300 text-base">Start by selecting dates</p>
+                    ) : (
+                        <SubmitFormButton pendingLabel={"Processing...."}>
+                            Reserve now
+                        </SubmitFormButton>
+                    )}
                 </div>
             </form>
         </div>
